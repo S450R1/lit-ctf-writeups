@@ -1,7 +1,7 @@
 
 # WhiteDukesDZ - LIT CTF 2025 Writeup: Group Chat Challenge
 
-![WhiteDukesDZ Logo](challenge/web-group-chat.png)
+![WhiteDukesDZ Logo](challenge/web-group-chat2.png)
 
 We were also provided with the `main.py` file as part of this challenge.
 
