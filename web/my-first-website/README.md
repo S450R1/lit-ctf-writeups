@@ -37,27 +37,32 @@ After reviewing `app.py`, we identified eight main endpoints:
     - On `POST`, verifies:
       - If `password` != `confirm`, redirects to `/signup` and display `passwords do not match` message.
       - If `username` already exists in database, redirects to `/signup` and display `user already exists` message.
+    
     Otherwise, <ins>inserts the new user into the database without any further sanitizations</ins>, and redirects to `/login`
 
 4. **`/contact`:**
     - Accepts only `POST` requests with `comment` in request body.
       - If `username` is not set in session, redirects to `/login`.
+    
     Otherwise, <ins>inserts the new `comment` into the database without any further sanitizations</ins>, and shows the submission message.
 
 
 
 5. **`/admin`:**
     - verifies if user is not admin, shows a `403` Error (Unauthorized).
+    
     Otherwise, shows the admin page with <ins>all comments</ins> displayed. 
 
 6. **`/updatePassword`:**
     - Accepts only `POST` requests with `newPassword` in request body.
       - verifies if user is not admin, shows a `403` Error (Unauthorized).
+    
     Otherwise, update the currently connected user password to `newPassword` without any further sanitizations.
 
 7. **`/resetDB`:**
     - Accepts only `POST` requests.
       - verifies if user is not admin, shows a `403` Error (Unauthorized).
+    
     Otherwise, runs a shell command with current `username` that will reset the database and set the current user to admin.
       - If command fails, shows `DB RESET FAILED` message.
       - If command succeed shows `Success` message.
