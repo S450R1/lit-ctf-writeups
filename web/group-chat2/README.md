@@ -1,5 +1,5 @@
 
-# WhiteDukesDZ - LIT CTF 2025 Writeup: Group Chat Challenge
+# WhiteDukesDZ - LIT CTF 2025 Writeup: Group Chat 2 Challenge
 
 ![WhiteDukesDZ Logo](challenge/web-group-chat2.png)
 
