@@ -97,7 +97,7 @@ Based on our Application Analysis and Security Observations, we can execute comm
 - Create a new account with a malicious `username` that will contain the command we want to execute `username=; echo $(ls -al) > static/output.txt ;#`. If this `username` is used in the shell command that will run when accessing `/resetDB` it will result in this command being executed:
 
 ```python
-result = subprocess.run(f"python init_db.py ; echo $(ls -al /) > static/output.txt ;#", shell=True)
+result = subprocess.run(f"python init_db.py ; echo $(ls -al) > static/output.txt ;#", shell=True)
 ```
 
 - Log In with our newly created user.
