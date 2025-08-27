@@ -2,6 +2,7 @@
 import sys
 import requests
 from bs4 import BeautifulSoup
+import re
 
 message = "dummy"
 
@@ -10,7 +11,7 @@ username2 = "'[:12]).read()}}"
 
 usernames = [username1, username2]
 
-base_url = "http://34.44.129.8:55207"
+base_url = "http://34.44.129.8:52162"
 
 
 def set_username(session, base_url, username):
@@ -27,7 +28,7 @@ def get_flag(session, base_url):
     chat_box = soup.find(id="chat-box")
     if chat_box:
         html = chat_box.decode_contents()
-        lines = html.split('<br>')
+        lines = re.split(r'<br\s*/?>', html)
         if lines:
             last = lines[-1].strip()
             return last.split(':')[0].strip()
